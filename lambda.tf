@@ -17,6 +17,11 @@ resource "aws_lambda_function" "watchtower" {
   memory_size = var.memory_size
 
   environment {
-    variables = var.environment_variables
+    variables = merge({
+      RUST_BACKTRACE        = "1",
+      RUST_LOG              = "trace",
+      AWS_LAMBDA_LOG_FORMAT = "json",
+      AWS_LAMBDA_LOG_LEVEL  = "trace"
+    }, var.environment_variables)
   }
 }

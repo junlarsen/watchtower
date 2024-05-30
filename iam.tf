@@ -55,3 +55,8 @@ resource "aws_iam_policy" "watchtower" {
   name   = "${aws_lambda_function.watchtower.function_name}-policy"
   policy = data.aws_iam_policy_document.watchtower.json
 }
+
+resource "aws_iam_role_policy_attachment" "watchtower" {
+  policy_arn = aws_iam_policy.watchtower.arn
+  role       = aws_iam_role.watchtower_assume_role.name
+}

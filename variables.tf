@@ -44,7 +44,7 @@ variable "timeout" {
 variable "memory_size" {
   description = "The amount of memory that Lambda allocates to the function"
   type        = number
-  default     = 128
+  default     = 512
 }
 
 variable "environment_variables" {
