@@ -25,3 +25,9 @@ resource "aws_lambda_function" "watchtower" {
     }, var.environment_variables)
   }
 }
+
+resource "aws_lambda_permission" "watchtower_eventbridge" {
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.watchtower.function_name
+  principal     = "events.amazonaws.com"
+}

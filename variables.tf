@@ -75,3 +75,9 @@ variable "output_directory" {
   type        = string
   default     = "dist/lambda/watchtower"
 }
+
+variable "rule_expression" {
+  description = "The rule expression that defines the schedule for the Lambda function"
+  type        = string
+  default     = "cron(0 6 * * ? *)"
+}
