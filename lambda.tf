@@ -1,11 +1,12 @@
 data "archive_file" "watchtower" {
-  type = "zip"
-  source {
-    // Sensitive to prevent the binary code from being printed to the console during Terraform apply or plan
-    content  = sensitive(data.http.asset.response_body)
-    filename = "bootstrap"
-  }
+  type        = "zip"
+  source_file = local_file.watchtower.filename
   output_path = "${var.output_directory}/watchtower-lambda.zip"
+}
+
+resource "local_file" "watchtower" {
+  filename       = "${var.output_directory}/bootstrap"
+  content_base64 = data.http.asset.response_body_base64
 }
 
 resource "aws_lambda_function" "watchtower" {

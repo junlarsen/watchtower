@@ -8,11 +8,15 @@ terraform {
     }
     github = {
       source  = "integrations/github"
-      version = "6.2.1"
+      version = "~> 6.2.1"
     }
     http = {
       source  = "hashicorp/http"
-      version = "3.4.2"
+      version = "~> 3.4.2"
+    }
+    local = {
+      source  = "hashicorp/local"
+      version = "~> 2.5.1"
     }
   }
 }
