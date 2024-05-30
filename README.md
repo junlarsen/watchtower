@@ -66,4 +66,8 @@ module "watchtower" {
 }
 ```
 
+## License
+
+This project is licensed under the Apache 2.0 License. See the [LICENSE](LICENSE) file for more information.
+
 [discord-webhook]: https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks
