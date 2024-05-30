@@ -66,6 +66,12 @@ module "watchtower" {
 }
 ```
 
+## Why does this project exist?
+
+I manage multiple AWS accounts for various projects and clients. I like to have some visibility into the costs of these
+accounts, but I don't want to log into each account to check costs. I was also not interested in setting up AWS Budgets
+for each account, as I don't have full ownership of all the accounts.
+
 ## License
 
 This project is licensed under the Apache 2.0 License. See the [LICENSE](LICENSE) file for more information.
