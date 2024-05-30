@@ -64,12 +64,6 @@ variable "cloudwatch_log_retention_window" {
   default     = 14
 }
 
-variable "target_directory" {
-  description = "The directory containing the source code for the Lambda function"
-  type        = string
-  default     = "target/lambda/watchtower/"
-}
-
 variable "output_directory" {
   description = "The directory in which to store the Lambda function deployment package"
   type        = string
@@ -80,4 +74,10 @@ variable "rule_expression" {
   description = "The rule expression that defines the schedule for the Lambda function"
   type        = string
   default     = "cron(0 6 * * ? *)"
+}
+
+variable "watchtower_release" {
+  description = "The version of the Watchtower release to deploy. Either 'latest' or a git tag."
+  type        = string
+  default     = "latest"
 }
