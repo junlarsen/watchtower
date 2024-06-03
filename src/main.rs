@@ -1,17 +1,15 @@
 use std::ops::Sub;
 
-use anyhow::{bail, Context};
+use anyhow::bail;
 use aws_sdk_costexplorer::types::{DateInterval, Granularity};
 use chrono::{Duration, NaiveDate, Utc};
 use lambda_http::service_fn;
 use lambda_runtime::tracing::init_default_subscriber;
 use lambda_runtime::LambdaEvent;
 use serde_json::{json, Value};
-use serenity::all::{CreateEmbedFooter, ExecuteWebhook};
-use serenity::builder::CreateEmbed;
-use serenity::http::Http;
-use serenity::model::webhook::Webhook;
-use serenity::model::Color;
+
+#[cfg(feature = "discord")]
+mod discord;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -29,7 +27,12 @@ async fn handler(_: LambdaEvent<Value>) -> Result<Value, lambda_runtime::Error> 
     let aws_config = aws_config::load_from_env().await;
     let cost_explorer = aws_sdk_costexplorer::Client::new(&aws_config);
     let metrics = get_cost_metrics(&cost_explorer).await?;
-    dispatch_discord_webhook(&metrics).await?;
+    #[cfg(feature = "discord")]
+    discord::dispatch_discord_webhook(&metrics).await?;
+
+    #[cfg(not(any(feature = "discord")))]
+    tracing::warn!("no notification methods are enabled");
+
     tracing::debug!("handler completed successfully");
 
     Ok(json!({ "message": "OK" }))
@@ -92,30 +95,4 @@ async fn get_cost_metrics(client: &aws_sdk_costexplorer::Client) -> anyhow::Resu
         });
     }
     bail!("no cost metrics found");
-}
-
-async fn dispatch_discord_webhook(metrics: &CostMetrics) -> anyhow::Result<()> {
-    tracing::debug!("dispatching discord webhook");
-    let webhook_url = std::env::var("DISCORD_WEBHOOK_URL")?;
-
-    let http = Http::new("");
-    let webhook = Webhook::from_url(&http, &webhook_url)
-        .await
-        .context("failed to fetch webhook")?;
-    let mut embed = CreateEmbed::new()
-        .title("Cost metrics from WatchTower")
-        .description("Here are the cost metrics for the last 15 days")
-        .color(Color::from(0x48b9c7))
-        .footer(CreateEmbedFooter::new(format!(
-            "Total sum for the last 15 days: ${}",
-            metrics.total_cost
-        )));
-    for (date, cost) in &metrics.daily_cost {
-        embed = embed.field(format!("{}", date), format!("${}", cost), true);
-    }
-    tracing::debug!("sending webhook with embed {:?}", embed);
-
-    let builder = ExecuteWebhook::new().username("Watchtower").embed(embed);
-    webhook.execute(&http, false, builder).await?;
-    Ok(())
 }

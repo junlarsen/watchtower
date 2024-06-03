@@ -14,6 +14,13 @@ daily breakdown of the costs for the last 15 days. This is done using the Cost E
 WatchTower currently only supports Discord Webhooks for sending messages. If you'd like to see support for other
 messaging integrations, feel free to open an issue or a pull request.
 
+To enable to disable messaging integrations, use Cargo features when building the project. The GitHub releases contains
+a binary with the `discord` feature enabled.
+
+```shell
+cargo build --release --features discord
+```
+
 <p align="center">
   <img src="https://raw.githubusercontent.com/junlarsen/watchtower/main/docs/demo.png" />
 </p>
